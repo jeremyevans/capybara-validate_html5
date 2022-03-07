@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+
+gem 'rake'
+gem 'rack-test', '>= 0.6'
+gem 'capybara', '>= 3.36.0'
+gem 'minitest'
+gem 'minitest-global_expectations'

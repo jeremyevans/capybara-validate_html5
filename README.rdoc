@@ -1,0 +1,48 @@
+= capybara-validate_html5
+
+capybara-validate_html5 validates the HTML5 for each page accessed, and
+fails if there are any HTML5 parse errors on the page.  This makes
+it easy to automatically test for HTML5 validity when running your
+normal capybara test suite.
+
+This only works for the rack-test driver.
+
+= Installation
+
+  gem install capybara-validate_html5
+
+= Source Code
+
+Source code is available on GitHub at https://github.com/jeremyevans/capybara-validate_html5
+
+= Examples
+
+  require 'capybara'
+  require 'capybara/validate_html5'
+
+  describe Capybara::RestoreState do
+    include Rack::Test::Methods
+    include Capybara::DSL
+
+    def app
+      MyRackApp
+    end
+
+    it "should allow restoring of state" do
+      visit '/' # validates HTML, fails spec if not valid
+
+      skip_html_validation do
+        click_button 'Submit' # doesn't validate resulting HTML
+      end
+
+      click_link 'Go Somewhere' # validates HTML, fails spec if not valid
+    end
+  end
+
+= License
+
+MIT
+
+= Author
+
+Jeremy Evans <code@jeremyevans.net>
