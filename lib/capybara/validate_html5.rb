@@ -41,6 +41,15 @@ END_MSG
         end
         super
       end
+
+      # Skip HTML validation during base_href calculations.
+      def base_href
+        skip_html_validation = @skip_html_validation
+        @skip_html_validation = true
+        super
+      ensure
+        @skip_html_validation = skip_html_validation
+      end
     end
 
     RackTest::Browser.prepend(RackTest::ValidateDom)
