@@ -44,11 +44,7 @@ END_MSG
 
       # Skip HTML validation during base_href calculations.
       def base_href
-        skip_html_validation = @skip_html_validation
-        @skip_html_validation = true
-        super
-      ensure
-        @skip_html_validation = skip_html_validation
+        skip_html_validation{super}
       end
     end
 
