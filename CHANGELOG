@@ -1,3 +1,9 @@
+=== master
+
+* Require html5 validation by default, use capybara/optionally_validate_html5 for previous behavior (jeremyevans)
+
+* Work with capybara 3.37.0 (jeremyevans)
+
 === 1.0.0 (2022-03-07)
 
 * Initial Public Release

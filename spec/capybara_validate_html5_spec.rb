@@ -3,7 +3,12 @@ gem 'minitest'
 require 'minitest/global_expectations/autorun'
 require 'capybara'
 require 'capybara/dsl'
-require_relative '../lib/capybara/validate_html5'
+begin
+  require_relative '../lib/capybara/validate_html5'
+rescue LoadError
+  optional = true
+  require_relative '../lib/capybara/optionally_validate_html5'
+end
 
 s = (<<END).freeze
 <!DOCTYPE html>
@@ -43,7 +48,7 @@ describe 'capybara-validate_html5' do
     e.message.must_include "\n<body>\n  </h1>\n</body>\n"
     e.message.must_include 'Nokogiri::XML::SyntaxError'
     e.message.must_include "ERROR: That tag isn't allowed here  Currently open tags: html, body."
-  end
+  end unless optional
 
   it "should raise failed assertion for invalid HTML if inside skip_html_validation" do
     visit '/'
