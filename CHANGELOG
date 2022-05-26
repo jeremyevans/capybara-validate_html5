@@ -1,4 +1,4 @@
-=== master
+=== 1.1.0 (2022-05-26)
 
 * Make error output more friendly, showing error message and HTML for each error (jeremyevans)
 
