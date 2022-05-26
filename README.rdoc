@@ -5,7 +5,8 @@ fails if there are any HTML5 parse errors on the page.  This makes
 it easy to automatically test for HTML5 validity when running your
 normal capybara test suite.
 
-This only works for the rack-test driver.
+This only works for the rack-test driver, and only works when using
+minitest-global_expectations for testing.
 
 = Installation
 
@@ -19,8 +20,9 @@ Source code is available on GitHub at https://github.com/jeremyevans/capybara-va
 
   require 'capybara'
   require 'capybara/validate_html5'
+  require 'minitest/global_expectations'
 
-  describe Capybara::RestoreState do
+  describe 'capybara-validate_html5' do
     include Rack::Test::Methods
     include Capybara::DSL
 
