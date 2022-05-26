@@ -27,19 +27,25 @@ module Capybara
       unless @dom || @skip_html_validation
         errors = Nokogiri::HTML5(html, max_errors: 10).errors
         unless errors.empty?
-          first_error_line = errors.first.line
-          begin_line = first_error_line - 3
-          end_line = first_error_line + 3
-          begin_line = 0 if begin_line < 0
           called_from = caller_locations.detect do |loc|
             loc.path !~ %r{lib/(capybara|nokogiri|minitest)}
           end
-          errors.must_be_empty(<<END_MSG)
+          html_lines = html.split("\n").map.with_index{|line, i| "#{sprintf("%6i", i+1)}: #{line}"}
+          error_info = String.new
+          error_info << (<<END_MSG)
 invalid HTML on page returned for #{last_request.path}, called from #{called_from.path}:#{called_from.lineno}
 
-#{html.split("\n")[begin_line..end_line].join("\n")}
-
 END_MSG
+
+          errors.each do |error|
+            error_line = error.line
+            begin_line = error_line - 3
+            end_line = error_line + 3
+            begin_line = 0 if begin_line < 0
+            error_info << error.to_s << "\n" << html_lines[begin_line..end_line].join("\n") << "\n\n"
+          end
+
+          errors.size.must_equal(0, error_info)
         end
       end
       super
