@@ -1,13 +1,24 @@
+if ENV.delete('COVERAGE')
+  require 'simplecov'
+
+  SimpleCov.start do
+    enable_coverage :branch
+    add_filter "/spec/"
+    add_group('Missing'){|src| src.covered_percent < 100}
+    add_group('Covered'){|src| src.covered_percent == 100}
+  end
+end
+
 ENV['MT_NO_PLUGINS'] = '1' # Work around stupid autoloading of plugins
 gem 'minitest'
 require 'minitest/global_expectations/autorun'
 require 'capybara'
 require 'capybara/dsl'
+require_relative '../lib/capybara/optionally_validate_html5'
 begin
   require_relative '../lib/capybara/validate_html5'
 rescue LoadError
   optional = true
-  require_relative '../lib/capybara/optionally_validate_html5'
 end
 
 s = (<<END).freeze
@@ -31,11 +42,20 @@ a,b,c
 END
 
 Capybara.app = lambda do |env|
-  if env["PATH_INFO"] == '/csv'
-    [200, {'Content-Type'=>'text/csv', 'Content-Length'=>csv.length}, [csv]]
+  body = case env["PATH_INFO"]
+  when '/csv'
+    csv
+  when '/short'
+    "a\nb"
+  when '/good'
+    s.sub("</h1>", "")
+  when '/redirect'
+    return [303, {'Location'=>'/good'}, []]
   else
-    [200, {'Content-Type'=>'text/html', 'Content-Length'=>s.length}, [s]]
+    s
   end
+
+  [200, {'Content-Length'=>body.bytesize}, [body]]
 end
 
 describe 'capybara-validate_html5' do
@@ -49,7 +69,26 @@ describe 'capybara-validate_html5' do
     e.message.must_include "\n     9: <body>\n    10:   </h1>\n    11: </body>\n"
   end unless optional
 
-  it "should raise failed assertion for invalid HTML if inside skip_html_validation" do
+  it "should raise failed assertion for error in first few lines of HTML" do
+    visit '/short'
+    e = proc{page.title}.must_raise(Minitest::Assertion)
+    e.message.must_include('invalid HTML on page returned for /short, called from spec/capybara_validate_html5_spec.rb')
+    e.message.must_include "ERROR: Expected a doctype token"
+    e.message.must_include "\n     1: a\n     2: b\n"
+  end unless optional
+
+  it "should raise for valid HTML" do
+    visit '/good'
+    page.title.must_equal 'a'
+  end
+
+  it "should handle redirects while on an invalid page" do
+    visit '/'
+    visit '/redirect'
+    page.title.must_equal 'a'
+  end
+
+  it "should not raise failed assertion for invalid HTML if inside skip_html_validation" do
     visit '/'
     skip_html_validation{page.title}
     page.title.must_equal 'a'

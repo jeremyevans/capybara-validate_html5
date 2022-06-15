@@ -1,9 +1,11 @@
 require 'capybara'
 
 module Capybara
+  # :nocov:
   unless Capybara.respond_to?(:use_html5_parsing) && defined?(Nokogiri::HTML5)
     raise LoadError, "capybara-validate_html5 cannot be used as Capybara or Nokogiri doesn't support HTML5 parsing (require capybara/optionally_validate_html5 to make validation optional)"
   end
+  # :nocov:
 
   self.use_html5_parsing = true
 
