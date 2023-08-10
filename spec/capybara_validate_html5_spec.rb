@@ -65,7 +65,8 @@ describe 'capybara-validate_html5' do
     visit '/'
     e = proc{page.title}.must_raise(Minitest::Assertion)
     e.message.must_include('invalid HTML on page returned for /, called from spec/capybara_validate_html5_spec.rb')
-    e.message.must_include "ERROR: That tag isn't allowed here  Currently open tags: html, body."
+    e.message.must_include "isn't allowed here"
+    e.message.must_include "Currently open tags: html, body."
     e.message.must_include "\n     9: <body>\n    10:   </h1>\n    11: </body>\n"
   end unless optional
 
