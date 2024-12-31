@@ -1,6 +1,6 @@
 = capybara-validate_html5
 
-capybara-validate_html5 validates the HTML5 for each page accessed, and
+capybara-validate_html5 validates the HTML5 for each page parsed, and
 fails if there are any HTML5 parse errors on the page.  This makes
 it easy to automatically test for HTML5 validity when running your
 normal capybara test suite.

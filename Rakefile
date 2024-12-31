@@ -23,7 +23,7 @@ end
 
 RDoc::Task.new do |rdoc|
   rdoc.rdoc_dir = "rdoc"
-  rdoc.options += ["--quiet", "--line-numbers", "--inline-source", '--title', 'capybara-validate_html5: Validate HTML5 for each page accessed', '--main', 'README.rdoc']
+  rdoc.options += ["--quiet", "--line-numbers", "--inline-source", '--title', 'capybara-validate_html5: Validate HTML5 for each page parsed', '--main', 'README.rdoc']
 
   begin
     gem 'hanna'

@@ -1,4 +1,4 @@
-=== master
+=== 2.0.0 (2024-12-31)
 
 * Remove runtime dependency on minitest and minitest-global_expectations (jeremyevans)
 

@@ -1,17 +1,17 @@
 Gem::Specification.new do |s|
   s.name = 'capybara-validate_html5'
-  s.version = '1.1.0'
+  s.version = '2.0.0'
   s.platform = Gem::Platform::RUBY
   s.extra_rdoc_files = ["README.rdoc", "CHANGELOG", "MIT-LICENSE"]
-  s.rdoc_options += ["--quiet", "--line-numbers", "--inline-source", '--title', 'capybara-validate: Validate HTML5 for each page accessed', '--main', 'README.rdoc']
+  s.rdoc_options += ["--quiet", "--line-numbers", "--inline-source", '--title', 'capybara-validate: Validate HTML5 for each page parsed', '--main', 'README.rdoc']
   s.license = "MIT"
-  s.summary = "Validate HTML5 for each page accessed"
+  s.summary = "Validate HTML5 for each page parsed"
   s.author = "Jeremy Evans"
   s.email = "code@jeremyevans.net"
   s.homepage = "http://github.com/jeremyevans/capybara-validate_html5"
   s.files = %w(MIT-LICENSE CHANGELOG README.rdoc) + Dir["lib/**/*.rb"]
   s.description = <<END
-capybara-validate validates the HTML5 for each page accessed, and
+capybara-validate validates the HTML5 for each page parsed, and
 fails if there are any HTML5 parse errors on the page.  This makes
 it easy to automatically test for HTML5 validity when running your
 normal capybara test suite.
