@@ -50,9 +50,7 @@ END_MSG
             error_info << error.to_s << "\n" << html_lines[begin_line..end_line].join("\n") << "\n\n"
           end
 
-          unless errors.size == 0
-            raise HTML5ValidationError, "#{errors.size} HTML5 validation errors: #{error_info}"
-          end
+          raise HTML5ValidationError, "#{errors.size} HTML5 validation errors: #{error_info}"
         end
       end
       super
