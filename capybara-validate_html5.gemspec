@@ -24,6 +24,6 @@ END
 
   s.add_dependency 'rack-test', '>= 0.6'
   s.add_dependency 'capybara'
-  s.add_dependency 'minitest'
-  s.add_dependency "minitest-global_expectations"
+  s.add_development_dependency 'minitest'
+  s.add_development_dependency "minitest-global_expectations"
 end

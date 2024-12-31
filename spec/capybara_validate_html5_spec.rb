@@ -63,7 +63,7 @@ describe 'capybara-validate_html5' do
 
   it "should raise failed assertion for invalid HTML" do
     visit '/'
-    e = proc{page.title}.must_raise(Minitest::Assertion)
+    e = proc{page.title}.must_raise(Capybara::HTML5ValidationError)
     e.message.must_include('invalid HTML on page returned for /, called from spec/capybara_validate_html5_spec.rb')
     e.message.must_include "isn't allowed here"
     e.message.must_include "Currently open tags: html, body."
@@ -72,7 +72,7 @@ describe 'capybara-validate_html5' do
 
   it "should raise failed assertion for error in first few lines of HTML" do
     visit '/short'
-    e = proc{page.title}.must_raise(Minitest::Assertion)
+    e = proc{page.title}.must_raise(Capybara::HTML5ValidationError)
     e.message.must_include('invalid HTML on page returned for /short, called from spec/capybara_validate_html5_spec.rb')
     e.message.must_include "ERROR: Expected a doctype token"
     e.message.must_include "\n     1: a\n     2: b\n"

@@ -1,6 +1,10 @@
 require 'capybara'
 
 module Capybara
+  # Exception class raised for HTML5 validations
+  class HTML5ValidationError < StandardError
+  end
+
   # :nocov:
   unless Capybara.respond_to?(:use_html5_parsing) && defined?(Nokogiri::HTML5)
     raise LoadError, "capybara-validate_html5 cannot be used as Capybara or Nokogiri doesn't support HTML5 parsing (require capybara/optionally_validate_html5 to make validation optional)"
@@ -11,7 +15,6 @@ module Capybara
 
   require 'capybara/rack_test/browser'
   require 'capybara/dsl'
-  require 'minitest'
 
   module RackTest::ValidateDom
     # Skip HTML validation inside the block.
@@ -47,7 +50,9 @@ END_MSG
             error_info << error.to_s << "\n" << html_lines[begin_line..end_line].join("\n") << "\n\n"
           end
 
-          errors.size.must_equal(0, error_info)
+          unless errors.size == 0
+            raise HTML5ValidationError, "#{errors.size} HTML5 validation errors: #{error_info}"
+          end
         end
       end
       super
