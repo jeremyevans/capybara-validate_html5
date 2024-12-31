@@ -28,13 +28,19 @@ Source code is available on GitHub at https://github.com/jeremyevans/capybara-va
     end
 
     it "should allow restoring of state" do
-      visit '/' # validates HTML, fails spec if not valid
+      visit '/' # No validation on retrieval
+      page.body # No validation on body access
 
+      page.all("a") # Attempt to parse body, validates HTML, raises exception if not valid
+      page.all("a") # No validation, as same body already parsed
+
+      visit '/page1'
+      click_link 'Go Somewhere' # Attempt to parse body, validates HTML, raises exception if not valid
+
+      visit '/page2'
       skip_html_validation do
-        click_button 'Submit' # doesn't validate resulting HTML
+        click_button 'Submit' # No validation, as it was explicitly skipped
       end
-
-      click_link 'Go Somewhere' # validates HTML, fails spec if not valid
     end
   end
 
