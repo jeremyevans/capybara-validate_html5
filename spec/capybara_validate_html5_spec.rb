@@ -49,6 +49,8 @@ Capybara.app = lambda do |env|
     "a\nb"
   when '/good'
     s.sub("</h1>", "")
+  when '/invalid-required'
+    s.sub("</h1>", "<input required='true' /><input required='false' /><input checked='true' /><input checked='false' />"*3)
   when '/redirect'
     return [303, {'Location'=>'/good'}, []]
   else
@@ -60,6 +62,9 @@ end
 
 describe 'capybara-validate_html5' do
   include Capybara::DSL
+
+  before do
+  end
 
   it "should raise failed assertion for invalid HTML" do
     visit '/'
@@ -78,10 +83,37 @@ describe 'capybara-validate_html5' do
     e.message.must_include "\n     1: a\n     2: b\n"
   end unless optional
 
-  it "should raise for valid HTML" do
+  it "should not raise for valid HTML" do
     visit '/good'
     page.title.must_equal 'a'
   end
+
+  it "should not raise for invalid required attributes" do
+    visit '/invalid-required'
+    page.title.must_equal 'a'
+  end
+
+  it "should use custom validation if defined" do
+    begin
+      Capybara.custom_html_validation do |doc, &block|
+        css = "*[required=true], *[required=false], input[checked=true], input[checked=false]"
+        doc.css(css).map(&block)
+      end
+
+      visit '/invalid-required'
+      e = proc{page.title}.must_raise(Capybara::HTML5ValidationError)
+      e.message.must_include('10 HTML5 validation errors: invalid HTML on page returned for /invalid-required, called from spec/capybara_validate_html5_spec.rb')
+      e.message.must_include "\n<input required=\"true\">\n"
+      e.message.must_include "\n<input required=\"false\">\n"
+      e.message.must_include "\n<input checked=\"true\">\n"
+      e.message.must_include "\n<input checked=\"false\">\n"
+      e.message.must_include(<<-END)
+10:   <input required='true' /><input required='false' /><input checked='true' /><input checked='false' /><input required='true' /><input required='false' /><input checked='true' /><input checked='false' /><input required='true' /><input required='false' /><input checked='true' /><input checked='false' />
+      END
+    ensure
+      Capybara.custom_html_validation{|doc| }
+    end
+  end unless optional
 
   it "should handle redirects while on an invalid page" do
     visit '/'

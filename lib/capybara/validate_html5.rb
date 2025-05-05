@@ -30,7 +30,16 @@ module Capybara
     # HTML validation, validate the HTML and expect no errors.
     def dom
       unless @dom || @skip_html_validation
-        errors = Nokogiri::HTML5(html, max_errors: 10).errors
+        doc = Nokogiri::HTML5(html, max_errors: 10)
+        errors = doc.errors
+
+        if errors.empty?
+          custom_html_validation(doc) do |element|
+            errors << element
+            break if errors.length >= 10
+          end
+        end
+
         unless errors.empty?
           called_from = caller_locations.detect do |loc|
             loc.path !~ %r{lib/(capybara|nokogiri|minitest)}
@@ -60,6 +69,15 @@ END_MSG
     def base_href
       skip_html_validation{super}
     end
+
+    private
+
+    # Perform any custom HTML validation
+    def custom_html_validation(doc, &block)
+      # nothing by default
+    end
+    # Avoid method override warnings
+    alias custom_html_validation custom_html_validation
   end
 
   RackTest::Browser.prepend(RackTest::ValidateDom)
@@ -69,5 +87,17 @@ END_MSG
     def skip_html_validation(&block)
       page.driver.browser.skip_html_validation(&block)
     end
+  end
+
+  # Define custom validation to use, in addition to standard HTML5 validation.
+  # This can allow you to detect and raise errors for issues that are not
+  # caught by Nokogiri's HTML5 validation.
+  def self.custom_html_validation(&block)
+    RackTest::ValidateDom.class_eval do
+      define_method(:custom_html_validation, &block)
+      alias_method(:custom_html_validation, :custom_html_validation)
+      private(:custom_html_validation)
+    end
+    nil
   end
 end

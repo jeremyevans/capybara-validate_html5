@@ -44,6 +44,18 @@ Source code is available on GitHub at https://github.com/jeremyevans/capybara-va
     end
   end
 
+= Custom HTML Validation
+
+You can perform your own custom validation of HTML elements, by calling
++Capybara.custom_html_validation+.  This will be passed the Nokogiri document
+and a block, and should call the block with any Nokogiri elements that are
+considered invalid:
+
+  Capybara.custom_html_validation do |doc, &block|
+    s = "*[required=true], *[required=false], input[checked=true], input[checked=false]"
+    doc.css(s).map(&block)
+  end
+
 = License
 
 MIT
