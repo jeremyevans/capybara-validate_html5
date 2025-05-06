@@ -1,4 +1,4 @@
-=== master
+=== 2.1.0 (2025-05-06)
 
 * Support custom html validation via Capybara.custom_html_validation (jeremyevans)
 

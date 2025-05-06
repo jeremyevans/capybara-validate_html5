@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'capybara-validate_html5'
-  s.version = '2.0.0'
+  s.version = '2.1.0'
   s.platform = Gem::Platform::RUBY
   s.extra_rdoc_files = ["README.rdoc", "CHANGELOG", "MIT-LICENSE"]
   s.rdoc_options += ["--quiet", "--line-numbers", "--inline-source", '--title', 'capybara-validate: Validate HTML5 for each page parsed', '--main', 'README.rdoc']
